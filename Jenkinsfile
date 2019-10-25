@@ -8,14 +8,14 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
-        AWS_REGION = 'us-east-1'
-        ENVIRONMENT = 'dev'
     }
     parameters {
         choice(
             choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
             description: 'Terraform action to apply',
             name: 'action')
+        string(defaultValue: "us-east-1", description: 'aws region', name: 'AWS_REGION')
+        string(defaultValue: "dev", description: 'deployment environment', name: 'ENVIRONMENT')
     }
     stages {
         stage('init') {
