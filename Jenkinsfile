@@ -9,9 +9,8 @@ pipeline {
     parameters {
         choice(
             choices: ['preview', 'apply', 'show', 'preview-destroy', 'destroy'],
-            description: 'Terraform action to apply'
-            name: 'action'
-        )
+            description: 'Terraform action to apply',
+            name: 'action')
     }
     stages {
         stage('init') {
