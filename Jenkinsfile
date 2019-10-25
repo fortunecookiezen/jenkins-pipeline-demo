@@ -8,6 +8,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
+        AWS_REGION = 'us-east-1'
     }
     parameters {
         choice(
@@ -36,7 +37,7 @@ pipeline {
                 expression { params.action == 'plan' }
             }
             steps {
-                sh 'terraform plan'
+                sh "terraform plan -var 'aws_region=${AWS_REGION}' -var-file=environments/dev.tfvars"
             }
         }
     }
