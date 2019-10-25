@@ -14,8 +14,11 @@ pipeline {
             choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
             description: 'Terraform action to apply',
             name: 'action')
+        choice(
+            choices: ['dev', 'test', 'prod'],
+            description: 'deployment environment',
+            name: 'ENVIRONMENT')
         string(defaultValue: "us-east-1", description: 'aws region', name: 'AWS_REGION')
-        string(defaultValue: "dev", description: 'deployment environment', name: 'ENVIRONMENT')
     }
     stages {
         stage('init') {
@@ -38,7 +41,7 @@ pipeline {
                 expression { params.action == 'plan' }
             }
             steps {
-                sh "terraform plan -input=false -var 'aws_region=${AWS_REGION}' --var-file=environments/${ENVIRONMENT}.tfvars"
+                sh "terraform plan -input=false -var 'aws_region=${AWS_REGION}' --var-file=environments/${ENVIRONMENT}.vars"
             }
         }
     }
