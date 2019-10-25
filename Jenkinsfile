@@ -23,5 +23,13 @@ pipeline {
                 sh 'terraform init'
             }
         }
+        stage('validate') {
+            when {
+                expression { params.action == 'preview' || params.action == 'apply' || params.action == 'destroy' }
+            }
+            steps {
+                sh 'terraform validate'
+            }
+        }
     }
 }
