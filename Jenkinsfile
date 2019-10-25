@@ -13,7 +13,7 @@ pipeline {
         choice(
             choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
             description: 'Terraform action to apply',
-            name: 'terraform action')
+            name: 'action')
     }
     stages {
         stage('init') {
