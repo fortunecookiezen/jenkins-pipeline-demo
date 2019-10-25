@@ -11,9 +11,9 @@ pipeline {
     }
     parameters {
         choice(
-            choices: ['preview', 'apply', 'show', 'preview-destroy', 'destroy'],
+            choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
             description: 'Terraform action to apply',
-            name: 'action')
+            name: 'terraform action')
     }
     stages {
         stage('init') {
@@ -25,10 +25,18 @@ pipeline {
         }
         stage('validate') {
             when {
-                expression { params.action == 'preview' || params.action == 'apply' || params.action == 'destroy' }
+                expression { params.action == 'plan' || params.action == 'apply' || params.action == 'destroy' }
             }
             steps {
                 sh 'terraform validate'
+            }
+        }
+        stage('plan') {
+            when {
+                expression { params.action == 'plan' }
+            }
+            steps {
+                sh 'terraform plan'
             }
         }
     }
