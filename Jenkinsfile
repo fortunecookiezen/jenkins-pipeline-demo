@@ -19,13 +19,12 @@ pipeline {
             description: 'deployment environment',
             name: 'ENVIRONMENT')
         string(defaultValue: "us-east-1", description: 'aws region', name: 'AWS_REGION')
+        string(defaultValue: "fcz", description: 'application system identifier', name: 'ASI')
     }
     stages {
         stage('init') {
             steps {
-                sh 'terraform version'
-                echo "AWS_ACCESS_KEY_ID is ${AWS_ACCESS_KEY_ID}"
-                sh 'terraform init'
+                sh 'terraform init -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="${AWS_REGION}"'
             }
         }
         stage('validate') {
