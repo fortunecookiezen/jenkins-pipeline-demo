@@ -96,7 +96,7 @@ pipeline {
                             input message: "Delete the stack?",
                             parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                         }
-                        sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}"'
+                        sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
                 }
             }
         }
