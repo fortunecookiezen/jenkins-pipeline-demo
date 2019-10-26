@@ -26,7 +26,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                sh 'terraform init -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
+                    sh 'terraform init -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
                 }
             }
         }
@@ -67,7 +67,10 @@ pipeline {
                 expression { params.action == 'preview-destroy' }
             }
             steps {
-                sh 'terraform plan -destroy -var aws_profile=${AWS_PROFILE}'
+                withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform plan -destroy '
+                }
             }
         }
         stage('destroy') {
@@ -75,7 +78,10 @@ pipeline {
                 expression { params.action == 'destroy' }
             }
             steps {
-                sh 'terraform destroy -force -var aws_profile=${AWS_PROFILE}'
+                withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform destroy -force -var aws_profile=${AWS_PROFILE}'
+                }
             }
         }
     }
