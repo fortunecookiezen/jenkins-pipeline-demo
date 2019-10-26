@@ -48,9 +48,11 @@ pipeline {
                 expression { params.action == 'apply'}
             }
             steps {
-                def plan = readFile 'tfplan'
-                input message: "Apply the plan?",
-                parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                script {
+                    def plan = readFile 'tfplan'
+                    input message: "Apply the plan?",
+                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                }
             }
         }
         stage('apply') {
