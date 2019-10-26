@@ -9,9 +9,6 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
     }
-    options {
-        ansiColor('xterm')
-    }
     parameters {
         choice(
             choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
