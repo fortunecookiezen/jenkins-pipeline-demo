@@ -54,5 +54,29 @@ pipeline {
                 sh 'terraform apply -auto-approve tfplan'
             }
         }
+        stage('show') {
+            when {
+                expression { params.action == 'show' }
+            }
+            steps {
+                sh 'terraform show'
+            }
+        }
+        stage('preview-destroy') {
+            when {
+                expression { params.action == 'preview-destroy' }
+            }
+            steps {
+                sh 'terraform plan -destroy -var aws_profile=${AWS_PROFILE}'
+            }
+        }
+        stage('destroy') {
+            when {
+                expression { params.action == 'destroy' }
+            }
+            steps {
+                sh 'terraform destroy -force -var aws_profile=${AWS_PROFILE}'
+            }
+        }
     }
 }
