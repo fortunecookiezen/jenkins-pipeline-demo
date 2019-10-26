@@ -74,12 +74,13 @@ pipeline {
         }
         stage('preview-destroy') {
             when {
-                expression { params.action == 'preview-destroy' }
+                expression { params.action == 'preview-destroy' || params.action == 'destroy'}
             }
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform plan -no-color -destroy -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                    sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                    sh 'terraform show -no-color tfplan > tfplan.txt'
                 }
             }
         }
@@ -90,7 +91,12 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}"'
+                        script {
+                            def plan = readFile 'tfplan.txt'
+                            input message: "Delete the stack?",
+                            parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                        }
+                        sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}"'
                 }
             }
         }
