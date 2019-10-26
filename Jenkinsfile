@@ -69,7 +69,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform plan -destroy -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                    sh 'terraform plan -no-color -destroy -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
                 }
             }
         }
