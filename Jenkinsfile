@@ -5,10 +5,10 @@ pipeline {
             args '--entrypoint="" -u root'
         } 
     }
-    environment {
+/*    environment {
         AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
-    }
+    } */
     parameters {
         choice(
             choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
@@ -57,6 +57,10 @@ pipeline {
             }
         }
         stage('apply') {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
+                AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
+            }
             when {
                 expression { params.action == 'apply' }
             }
