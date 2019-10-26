@@ -59,7 +59,7 @@ pipeline {
                 expression { params.action == 'show' }
             }
             steps {
-                sh 'terraform show'
+                sh 'terraform show -no-color'
             }
         }
         stage('preview-destroy') {
