@@ -31,11 +31,8 @@ pipeline {
             }
         }
         stage('validate') {
-            when {
-                expression { params.action == 'plan' || params.action == 'apply' || params.action == 'destroy' }
-            }
             steps {
-                sh 'terraform validate'
+                sh 'terraform validate -no-color'
             }
         }
         stage('plan') {
@@ -46,12 +43,22 @@ pipeline {
                 sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
             }
         }
+        stage('approval') {
+            when {
+                expression { params.action == 'apply'}
+            }
+            steps {
+                def plan = readFile 'tfplan'
+                input message: "Apply the plan?",
+                parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+            }
+        }
         stage('apply') {
             when {
                 expression { params.action == 'apply' }
             }
             steps {
-                sh 'terraform apply -auto-approve tfplan'
+                sh 'terraform apply -input=false tfplan'
             }
         }
         stage('show') {
