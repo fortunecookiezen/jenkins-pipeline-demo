@@ -24,9 +24,10 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                sh 'export "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}"'
-                sh 'export "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"'
+                withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh 'terraform init -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="${AWS_REGION}"'
+                }
             }
         }
         stage('validate') {
