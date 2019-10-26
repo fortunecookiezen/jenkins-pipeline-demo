@@ -48,7 +48,7 @@ pipeline {
         }
         stage('apply') {
             when {
-                expression { params.action == 'apply' }
+                expression { params.action == 'apply' || params.action == 'apply' }
             }
             steps {
                 sh 'terraform apply -auto-approve tfplan'
