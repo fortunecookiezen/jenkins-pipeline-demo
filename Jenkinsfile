@@ -40,7 +40,7 @@ pipeline {
                 expression { params.action == 'plan' || params.action == 'apply' }
             }
             steps {
-                sh 'terraform plan -no-color -input=false -out=tfplan.txt -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
             }
         }
         stage('approval') {
@@ -48,7 +48,7 @@ pipeline {
                 expression { params.action == 'apply'}
             }
             steps {
-                sh 'cat tfplan.txt'
+                sh 'terraform show -no-color tfplan > tfplan.txt'
                 script {
                     def plan = readFile 'tfplan.txt'
                     input message: "Apply the plan?",
@@ -61,7 +61,7 @@ pipeline {
                 expression { params.action == 'apply' }
             }
             steps {
-                sh 'terraform apply -no-color -input=false tfplan.txt'
+                sh 'terraform apply -no-color -input=false tfplan'
             }
         }
         stage('show') {
