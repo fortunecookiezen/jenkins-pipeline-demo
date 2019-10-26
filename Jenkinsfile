@@ -77,11 +77,8 @@ pipeline {
                 expression { params.action == 'preview-destroy' || params.action == 'destroy'}
             }
             steps {
-                withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
-                    sh 'terraform show -no-color tfplan > tfplan.txt'
-                }
+                sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
         stage('destroy') {
