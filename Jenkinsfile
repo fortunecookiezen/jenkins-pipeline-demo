@@ -22,12 +22,17 @@ pipeline {
         string(defaultValue: "fcz", description: 'application system identifier', name: 'ASI')
     }
     stages {
-        stage('init') {
+/*        stage('init') {
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh 'terraform init -no-color -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
                 }
+            }
+        } */
+        stage('init') {
+            steps {
+                sh 'terraform init -no-color -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
             }
         }
         stage('validate') {
@@ -36,10 +41,6 @@ pipeline {
             }
         }
         stage('plan') {
-            environment {
-                AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
-            }
             when {
                 expression { params.action == 'plan' || params.action == 'apply' }
             }
@@ -61,10 +62,6 @@ pipeline {
             }
         }
         stage('apply') {
-            environment {
-                AWS_ACCESS_KEY_ID = credentials('DEV_AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('DEV_AWS_SECRET_ACCESS_KEY')
-            }
             when {
                 expression { params.action == 'apply' }
             }
