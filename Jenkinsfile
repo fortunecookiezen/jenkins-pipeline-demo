@@ -40,7 +40,7 @@ pipeline {
         }
         stage('plan') {
             when {
-                expression { params.action == 'plan' }
+                expression { params.action == 'plan' || params.action == 'apply' }
             }
             steps {
                 sh "terraform plan -input=false -out=tfplan -var 'aws_region=${AWS_REGION}' --var-file=environments/${ENVIRONMENT}.vars"
@@ -48,7 +48,7 @@ pipeline {
         }
         stage('apply') {
             when {
-                expression { params.action == 'apply' || params.action == 'apply' }
+                expression { params.action == 'apply' }
             }
             steps {
                 sh 'terraform apply -auto-approve tfplan'
