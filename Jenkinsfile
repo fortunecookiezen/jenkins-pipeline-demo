@@ -33,7 +33,7 @@ pipeline {
         stage('validate') {
             steps {
                 sh 'terraform validate -no-color'
-                echo "${GIT_LOCAL_BRANCH}"
+                sh 'echo ${GIT_LOCAL_BRANCH}'
             }0
         }
         stage('plan') {
