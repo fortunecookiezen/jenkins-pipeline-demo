@@ -26,14 +26,13 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'DEV_AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
                     string(credentialsId: 'DEV_AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform init -no-color -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${ENVIRONMENT}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
+                    sh 'terraform init -no-color -backend-config="bucket=${ASI}-${ENVIRONMENT}-tfstate" -backend-config="key=${ASI}-${GIT_LOCAL_BRANCH}/terraform.tfstate" -backend-config="region=${AWS_REGION}"'
                 }
             }
         }
         stage('validate') {
             steps {
                 sh 'terraform validate -no-color'
-                sh 'echo ${GIT_LOCAL_BRANCH}'
             }
         }
         stage('plan') {
@@ -78,7 +77,7 @@ pipeline {
                 expression { params.action == 'preview-destroy' || params.action == 'destroy'}
             }
             steps {
-                sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
                 sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
@@ -92,7 +91,7 @@ pipeline {
                     input message: "Delete the stack?",
                     parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                 }
-                sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
     }
