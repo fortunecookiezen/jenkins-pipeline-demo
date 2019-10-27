@@ -41,7 +41,7 @@ pipeline {
                 expression { params.action == 'plan' || params.action == 'apply' }
             }
             steps {
-                sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${ENVIRONMENT}.vars'
+                sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
         stage('approval') {
