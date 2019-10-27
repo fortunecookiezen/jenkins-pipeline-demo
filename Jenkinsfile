@@ -54,6 +54,17 @@ pipeline {
                 sh 'echo branch is ${GIT_LOCAL_BRANCH} and params are plan'
             }
         }        
+        stage('branch') { // master branch
+            when {
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'plan' }
+                }
+            }
+            steps {
+                sh 'echo branch is ${GIT_LOCAL_BRANCH} and params are plan'
+            }
+        }     
         stage('approval') {
             when {
                 expression { params.action == 'apply'}
