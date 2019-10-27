@@ -43,6 +43,14 @@ pipeline {
                 sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
+        stage('branch') {
+            when {
+                branch 'development'
+            }
+            steps {
+                sh 'echo branch is ${GIT_LOCAL_BRACH}'
+            }
+        }        
         stage('approval') {
             when {
                 expression { params.action == 'apply'}
