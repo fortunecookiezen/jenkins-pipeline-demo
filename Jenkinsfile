@@ -45,10 +45,13 @@ pipeline {
         }
         stage('branch') {
             when {
-                branch 'development'
+                allOf {
+                    branch 'development'
+                    expression { params.action == 'plan' }
+                }
             }
             steps {
-                sh 'echo branch is ${GIT_LOCAL_BRANCH}'
+                sh 'echo branch is ${GIT_LOCAL_BRANCH} and params are plan'
             }
         }        
         stage('approval') {
