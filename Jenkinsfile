@@ -43,7 +43,7 @@ pipeline {
                 sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
-        stage('branch') {
+        stage('branch - development') {
             when {
                 allOf {
                     branch 'development'
@@ -54,7 +54,7 @@ pipeline {
                 sh 'echo branch is ${GIT_LOCAL_BRANCH} and params are plan'
             }
         }        
-        stage('branch') { // master branch
+        stage('branch - master') { // master branch
             when {
                 allOf {
                     branch 'master'
