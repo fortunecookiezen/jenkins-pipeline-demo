@@ -67,7 +67,10 @@ pipeline {
         }     
         stage('approval') {
             when {
-                expression { params.action == 'apply'}
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'apply'}
+                }
             }
             steps {
                 sh 'terraform show -no-color tfplan > tfplan.txt'
@@ -91,7 +94,7 @@ pipeline {
                 expression { params.action == 'show' }
             }
             steps {
-                sh 'terraform show -no-color'
+                sh 'terraform show -json -no-color'
             }
         }
         stage('preview-destroy') {
