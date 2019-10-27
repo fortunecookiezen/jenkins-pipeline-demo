@@ -48,7 +48,7 @@ pipeline {
                 branch 'development'
             }
             steps {
-                sh 'echo branch is ${GIT_LOCAL_BRACH}'
+                sh 'echo branch is ${GIT_LOCAL_BRANCH}'
             }
         }        
         stage('approval') {
