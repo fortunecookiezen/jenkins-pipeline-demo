@@ -11,7 +11,7 @@ pipeline {
     }
     parameters {
         choice(
-            choices: ['plan', 'apply', 'show', 'preview-destroy', 'destroy'],
+            choices: ['plan', 'apply', 'destroy'],
             description: 'Terraform action to apply',
             name: 'action')
         choice(
@@ -45,7 +45,10 @@ pipeline {
         }
         stage('approval') {
             when {
-                expression { params.action == 'apply'}
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'apply'}
+                }
             }
             steps {
                 sh 'terraform show -no-color tfplan > tfplan.txt'
@@ -64,17 +67,12 @@ pipeline {
                 sh 'terraform apply -no-color -input=false tfplan'
             }
         }
-        stage('show') {
-            when {
-                expression { params.action == 'show' }
-            }
-            steps {
-                sh 'terraform show -no-color'
-            }
-        }
         stage('preview-destroy') {
             when {
-                expression { params.action == 'preview-destroy' || params.action == 'destroy'}
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'destroy'}
+                }
             }
             steps {
                 sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
