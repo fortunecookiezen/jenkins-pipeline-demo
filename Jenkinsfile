@@ -11,7 +11,7 @@ pipeline {
     }
     parameters {
         choice(
-            choices: ['plan', 'apply', 'destroy'],
+            choices: ['apply', 'destroy'],
             description: 'Terraform action to apply',
             name: 'action')
         choice(
@@ -37,7 +37,7 @@ pipeline {
         }
         stage('plan') {
             when {
-                expression { params.action == 'plan' || params.action == 'apply' }
+                expression { params.action == 'apply' }
             }
             steps {
                 sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
@@ -80,7 +80,6 @@ pipeline {
             when {
                 allOf {
                     branch 'development'
-                    expression { params.action == 'destroy' }
                 }
             }
             steps {
