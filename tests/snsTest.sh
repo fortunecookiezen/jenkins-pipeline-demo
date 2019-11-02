@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-`which bash`
+echo `which bash`
+terraform output topic_arn
 echo "this is a test script"

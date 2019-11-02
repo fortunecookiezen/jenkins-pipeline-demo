@@ -73,7 +73,7 @@ pipeline {
             }
             steps {
                 sh 'terraform output'
-                sh 'cat ./tests/snsTest.sh'
+                sh './tests/snsTest.sh'
             }
         }
         stage('preview-destroy') {
