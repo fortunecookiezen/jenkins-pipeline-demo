@@ -1,3 +1,3 @@
 output "topic_arn" {
-  value = "${sns_topic.arn}"
+    value = "${sns_topic.arn}"
 }
