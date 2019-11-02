@@ -78,10 +78,7 @@ pipeline {
         }
         stage('preview-destroy') {
             when {
-                allOf {
-                    branch 'master'
-                    expression { params.action == 'destroy'}
-                }
+                expression { params.action == 'destroy' }
             }
             steps {
                 sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
