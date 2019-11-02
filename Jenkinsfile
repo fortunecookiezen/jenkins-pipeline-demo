@@ -72,7 +72,7 @@ pipeline {
                 expression { params.action == 'apply' }
             }
             steps {
-                sh './tests/snsTest.sh'
+                sh 'ls -R'
             }
         }
         stage('preview-destroy') {
