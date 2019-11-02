@@ -76,20 +76,29 @@ pipeline {
                 sh './tests/snsTest.sh'
             }
         }
-        stage('preview-destroy') {
+        stage('destroy - development') {
             when {
-                expression { params.action == 'destroy' }
+                allOf {
+                    branch 'development'
+                    expression { params.action == 'destroy' }
+                }
             }
             steps {
                 sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
                 sh 'terraform show -no-color tfplan > tfplan.txt'
+                sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
-        stage('destroy') {
+        stage('destroy - production') {
             when {
-                expression { params.action == 'destroy' }
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'destroy' }
+                }
             }
             steps {
+                sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
+                sh 'terraform show -no-color tfplan > tfplan.txt'
                 script {
                     def plan = readFile 'tfplan.txt'
                     input message: "Delete the stack?",
