@@ -72,6 +72,7 @@ pipeline {
                 expression { params.action == 'apply' }
             }
             steps {
+                sh 'terraform output'
                 sh 'cat ./tests/snsTest.sh'
             }
         }
