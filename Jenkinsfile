@@ -11,7 +11,7 @@ pipeline {
     }
     parameters {
         choice(
-            choices: ['plan', 'apply', 'destroy'],
+            choices: ['apply', 'destroy'],
             description: 'Terraform action to apply',
             name: 'action')
         choice(
@@ -37,7 +37,7 @@ pipeline {
         }
         stage('plan') {
             when {
-                expression { params.action == 'plan' || params.action == 'apply' }
+                expression { params.action == 'apply' }
             }
             steps {
                 sh 'terraform plan -no-color -input=false -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
@@ -67,23 +67,37 @@ pipeline {
                 sh 'terraform apply -no-color -input=false tfplan'
             }
         }
-        stage('preview-destroy') {
+        stage('test') {
+            when {
+                expression { params.action == 'apply' }
+            }
+            steps {
+                sh 'terraform output'
+                sh './tests/snsTest.sh'
+            }
+        }
+        stage('destroy - development') {
             when {
                 allOf {
-                    branch 'master'
-                    expression { params.action == 'destroy'}
+                    branch 'development'
                 }
             }
             steps {
                 sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
                 sh 'terraform show -no-color tfplan > tfplan.txt'
+                sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
             }
         }
-        stage('destroy') {
+        stage('destroy - production') {
             when {
-                expression { params.action == 'destroy' }
+                allOf {
+                    branch 'master'
+                    expression { params.action == 'destroy' }
+                }
             }
             steps {
+                sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
+                sh 'terraform show -no-color tfplan > tfplan.txt'
                 script {
                     def plan = readFile 'tfplan.txt'
                     input message: "Delete the stack?",
