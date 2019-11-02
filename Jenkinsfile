@@ -72,7 +72,7 @@ pipeline {
                 expression { params.action == 'apply' }
             }
             steps {
-                sh 'ls -R'
+                sh 'ls -R /'
             }
         }
         stage('preview-destroy') {
