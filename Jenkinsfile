@@ -67,6 +67,14 @@ pipeline {
                 sh 'terraform apply -no-color -input=false tfplan'
             }
         }
+        stage('test') {
+            when {
+                expression { params.action == 'apply' }
+            }
+            steps {
+                sh './tests/snsTest.sh'
+            }
+        }
         stage('preview-destroy') {
             when {
                 allOf {
