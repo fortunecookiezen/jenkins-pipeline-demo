@@ -4,9 +4,16 @@ so yeah, probably a poorly-named repo. This demonstrates how Jenkins can be used
 
 ## Pipeline
 
-![](images/jenkins_pipeline.png)
+![development](images/jenkins_pipeline.png)
+
+![master](images/jenkins_pipeline_master_build.png)
+
+## Pipeline Approval
+
+![master](images/jenkins_pipeline_destroy_approval.png)
+![master](images/jenkins_pipeline_destroy_prod.png)
 
 ## ToDo
 
 * ~add a diagram~
-* upload stage artifacts to s3. We should probably keep artifacts, if we're pretending to have an sdlc.
+* ~upload stage artifacts to s3. We should probably keep artifacts, if we're pretending to have an sdlc.~
