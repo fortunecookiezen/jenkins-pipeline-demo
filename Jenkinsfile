@@ -89,10 +89,10 @@ pipeline {
                 sh 'terraform plan -no-color -destroy -out=tfplan -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
                 sh 'terraform show -no-color tfplan > tfplan.txt'
                 sh 'terraform destroy -no-color -force -var "aws_region=${AWS_REGION}" --var-file=environments/${GIT_LOCAL_BRANCH}.vars'
-            }
                 withAWS(region: "${AWS_REGION}", credentials: 'dev_environment') {
                     s3Upload(file: 'tfplan.txt', bucket: "${ASI}-${ENVIRONMENT}-${AWS_REGION}-tfbuilds", path: "Jenkins/builds/${GIT_LOCAL_BRANCH}/${BUILD_TAG}-tfplan.txt")
                 }
+            }
         }
         stage('destroy - production') {
             when {
