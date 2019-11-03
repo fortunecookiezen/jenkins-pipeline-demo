@@ -2,11 +2,11 @@
 
 so yeah, probably a poorly-named repo. This demonstrates how Jenkins can be used to deploy Terraform resources in a multi-branch pipeline. CI/CD isn't my strongest skill, so it represented an opportunity for me to learn more about Jenkins.
 
-## Description
+## Pipeline
 
-
+![](images/jenkins_pipeline.png)
 
 ## ToDo
 
-* add a diagram
+* ~add a diagram~
 * upload stage artifacts to s3. We should probably keep artifacts, if we're pretending to have an sdlc.
